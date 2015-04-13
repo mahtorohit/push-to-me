@@ -1,0 +1,32 @@
+{
+  "name": "Push-To-Me",
+  "version": "1.0.0",
+  "description": "Send Push Notifications to test while development",
+  "main": "serverForIOS.js",
+  "private": true,
+  "dependencies": {
+    "express": "^4.11.0",
+    "apn": "^1.6.2",
+    "multer": "^0.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:pranavgore09/push-to-me.git"
+  },
+  "keywords": [
+    "push",
+    "notification",
+    "ios",
+    "nodejs"
+  ],
+  "author": "Pranav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pranavgore09/push-to-me/issues"
+  },
+  "homepage": "https://github.com/pranavgore09/push-to-me"
+}
