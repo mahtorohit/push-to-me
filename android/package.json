@@ -1,0 +1,32 @@
+{
+  "name": "Push-To-Me",
+  "version": "1.0.0",
+  "description": "Send Push Notifications to device while development",
+  "main": "gcmserver.js",
+  "private": true,
+  "dependencies": {
+    "express": "^4.11.0",
+    "node-gcm": "^0.9.15"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:pranavgore09/push-to-me.git"
+  },
+  "keywords": [
+    "push",
+    "notification",
+    "ios",
+    "android",
+    "nodejs"
+  ],
+  "author": "Pranav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pranavgore09/push-to-me/issues"
+  },
+  "homepage": "https://github.com/pranavgore09/push-to-me"
+}

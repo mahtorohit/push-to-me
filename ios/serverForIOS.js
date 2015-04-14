@@ -47,9 +47,9 @@ app.get('/ios/:push_token',function(req, res){
   push_token = req.params.push_token;
   res.end(JSON.stringify({'status':true, 'token':push_token}));
   send_puh_notification(push_token)
-  if(config.INTERVAL_SEC > 0){
+  if(config.interval_sec > 0){
       bind_func = send_puh_notification.bind(this, push_token)
-      setInterval(bind_func, config.INTERVAL_SEC)
+      setInterval(bind_func, config.interval_sec)
   }
 });
 
@@ -75,8 +75,8 @@ function send_puh_notification(push_token){
   note.badge = 3;
   // note.sound = "ping.aiff";
   note.sound = "default";
-  note.alert = "New notification.timestamp=" + (Math.floor(new Date() / 1000 )+ ", count="+config.NOTIFICATION_CNT++);
-  note.payload = {'messageFrom': 'Push-To-Me', 'timestamp':Math.floor(new Date() / 1000), 'count':config.NOTIFICATION_CNT};
+  note.alert = "New notification.timestamp=" + (Math.floor(new Date() / 1000 )+ ", count="+config.notification_cnt++);
+  note.payload = {'messageFrom': 'Push-To-Me', 'timestamp':Math.floor(new Date() / 1000), 'count':config.notification_cnt};
   try{
     apnConnection.pushNotification(note, myDevice);
   }catch(ex){
