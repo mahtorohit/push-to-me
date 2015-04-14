@@ -23,13 +23,13 @@ If yes then you will need this while development :)
 ```sh
 $ cd ios
 $ npm install
-$ node serverForIOS.js
+$ node server.js
 ```
 *For ANDROID*
 ```sh
 $ cd android
 $ npm install
-$ node gcmserver.js
+$ node server.js
 ```
 
 ###### Thats it !!!
@@ -37,12 +37,14 @@ $ node gcmserver.js
 #### How to use
 
 *For IOS*
+
 1. go to http://localhost:8080/
 2. Upload a p12 file and provide passphrase if any
 3. If you do not see any errors then you have configured it !!
 4. now go to http://localhost:8080/ios/YOUR_TOKEN
 
 *For ANDROID*
+
 1. go to http://localhost:9090/SERVER_KEY/PUSH_TOKEN
 
 
