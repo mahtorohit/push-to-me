@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html ng-app="pushtome">
+
+<head>
+    <title>Hello Electron !!</title>
+    <link href="lib/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/css/bootstrap-theme.min.css" rel="stylesheet">
+    <script type="text/javascript">
+    $ = require('jquery')
+    </script>
+    <script type="text/javascript" src="gcm.js"></script>
+    <script type="text/javascript" src="apns.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- android section below-->
+            <div class="col-xs-6">
+                <div class="page-header">
+                    <h2 class="text-center">
+                    <img src="lib/images/android.png" alt="" class="img-rounded">
+                        Android
+                    </h2>
+                </div>
+                <form id="andorid_form" action="javascript:gcm_handler();">
+                    <div class="form-group">
+                        <label for="gcm_server_key">GCM server key</label>
+                        <input class="form-control" id="gcm_server_key" placeholder="GCM server key" value="AIzaSyC8YhlT42qohZVp4kM4RGi9DZbpldORdIc" required data-fv-notempty="true" data-fv-notempty-message="Key can not be empty and should be valid.">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary">
+                            Update GCM server key
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="gcm_push_token">Push Token</label>
+                        <input class="form-control" id="gcm_push_token" placeholder="Valid Push Token" value="APA91bE9bj8c-4efslxIpf3C3Yolx_hQQcax_YYn_rf7Hdaz-Uhjr4Sv8XoVlJcwVb-gXJ_pcJzqw16dPOCdpYRPAAfap3duBD6Esv5x4xE3hAYw1O5nvtY" required data-fv-notempty-message="Push Token can not be empty and should be valid.">
+                    </div>
+                    <div class="form-group">
+                        <label for="gcm_payload">Enter JSON payload:</label>
+                        <textarea class="form-control" rows="5" id="gcm_payload">{"example":"GCM server"}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send Notification</button>
+                </form>
+                <div class="form-group">
+                    <label for="android_result">Result:</label>
+                    <textarea class="form-control" rows="3" id="android_result"></textarea>
+                </div>
+            </div>
+            <!-- iOS section below-->
+            <div class="col-xs-6">
+                <div class="page-header">
+                    <h2 class="text-center">iOS</h2>
+                </div>
+                <form id="ios_form" action="javascript:apns_handler();">
+                    <div class="form-group">
+                        <label for="p12_certificate">Path of P12 file</label>
+                        <input class="form-control" id="p12_certificate" placeholder="Please provide path for the downloaded p12 file" value="/Users/pranav/Downloads/VESSEL.p12" required data-fv-notempty="true" data-fv-notempty-message="Certificate path can not be empty and should be valid.">
+                    </div>
+                    <div class="form-group">
+                        <label for="p12_passphrase">Passphrase</label>
+                        <input id="p12_passphrase" value="vessel" type="text" placeholder="Passphrase for given p12 certificate"/>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" onclick="apns_upload_certificate()">Upload certificate</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="ios_push_token">Push Token</label>
+                        <input class="form-control" id="ios_push_token" placeholder="Valid Push Token" value="token 1" required data-fv-notempty-message="Push Token can not be empty and should be valid.">
+                    </div>
+                    <div class="form-group">
+                        <label for="apns_payload">Enter JSON payload:</label>
+                        <textarea class="form-control" rows="5" id="apns_payload">{"example":"APNS server"}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send Notification</button>
+                </form>
+                <div class="form-group">
+                    <label for="ios_result">Result:</label>
+                    <textarea class="form-control" rows="3" id="ios_result"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<!-- 
+
+remove round brackets
+increase input height
+by default serker key - disabled : click to modify when out-foucused auto-update
+remove update button
+
+
+-->
