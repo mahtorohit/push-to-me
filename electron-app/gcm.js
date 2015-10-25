@@ -6,6 +6,23 @@ var message = new gcm.Message();
 var push_token = null;
 var server_key = null;
 
+var pushtomeApp = angular.module('pushtomeApp', []);
+
+pushtomeApp.controller('GCM', function ($scope) {
+  $scope.server_key = "AIzaSyC8YhlT42qohZVp4kM4RGi9DZbpldORdIc"
+  $scope.push_token = "APA91bE9bj8c-4efslxIpf3C3Yolx_hQQcax_YYn_rf7Hdaz-Uhjr4Sv8XoVlJcwVb-gXJ_pcJzqw16dPOCdpYRPAAfap3duBD6Esv5x4xE3hAYw1O5nvtY"
+  $scope.message = new gcm.Message()
+  $scope.gcm_payload_str = '{"example":"GCM server"}'
+
+  $scope.send_notification = function(form) {
+    if (form) {
+      form.$setPristine();
+      form.$setUntouched();
+    }
+  }
+});
+
+
 
 function gcm_handler(){
   server_key = document.getElementById('gcm_server_key').value
