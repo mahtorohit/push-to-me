@@ -5,96 +5,120 @@
     <title>Hello Electron !!</title>
     <link href="lib/css/bootstrap.min.css" rel="stylesheet">
     <link href="lib/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="lib/css/angular-growl.css" rel="stylesheet">
     <script type="text/javascript" src="node_modules/angular/angular.js"></script>
     <script type="text/javascript" src="gcm.js"></script>
     <script type="text/javascript" src="apns.js"></script>
+    <script type="text/javascript" src="lib/js/angular-growl.js"></script>
 </head>
 
 <body>
+    <div growl></div>
     <div class="container-fluid">
         <div class="row">
             <!-- android section below-->
             <div class="col-xs-6" ng-controller="GCM">
-                <div class="page-header">
-                    <h2 class="text-center">
-                    <img src="lib/images/android.png" alt="" class="img-rounded">
-                    </h2>
-                </div>
-                <form name="form" novalidate class="simple-form">
-                    <div class="form-group">
-                        <label for="server_key">GCM server key</label>
-                        <input class="form-control" name="server_key" placeholder="GCM server key" required="" ng-model="server_key"/>
-                        <div ng-show="form.$submitted || form.uEmail.$touched" class="alert-danger" role="alert">
-                            <span ng-show="form.server_key.$error.required">Server Key is required.</span>
-                        </div>
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h2 class="text-center">
+                            <img src="lib/images/android.png" alt="" class="img-rounded"> </img>
+                            </h2>
                     </div>
-                    <div class="form-group">
-                        <label for="push_token">Push Token</label>
-                        <input class="form-control" name="push_token" placeholder="Valid Push Token" required="" ng-model="push_token">
-                        <div ng-show="form.$submitted || form.push_token.$touched" class="alert-danger" role="alert">
-                            <span ng-show="form.push_token.$error.required">Push Token is required.</span>
+                    <form name="form" novalidate class="simple-form" ng-init="boot()">
+                        <div class="form-group">
+                            <label for="server_key">API server key</label>
+                            <input class="form-control" name="server_key" placeholder="GCM server key" required ng-model="data.server_key" />
+                            <div ng-show="form.$submitted || form.uEmail.$touched" class="alert-danger" role="alert">
+                                <span ng-show="form.server_key.$error.required">Server Key is required.</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gcm_payload_str">Enter JSON payload:</label>
-                        <textarea ngRequired="true" class="form-control" rows="5" name="gcm_payload_str" ng-model="gcm_payload_str" required=""></textarea>
-                        <div ng-show="form.$submitted || form.gcm_payload_str.$touched" class="alert-danger" role="alert">
-                            <span ng-show="form.gcm_payload_str.$error.required">Have you added any payload ?</span>
+                        <div class="form-group">
+                            <label for="push_token">Push Token</label>
+                            <input class="form-control" name="push_token" placeholder="Valid Push Token" required ng-model="data.push_token">
+                            <div ng-show="form.$submitted || form.push_token.$touched" class="alert-danger" role="alert">
+                                <span ng-show="form.push_token.$error.required">Push Token is required.</span>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" ng-click="send_notification(form)" class="btn btn-default"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send Notification</button>
-                </form>
-                <div class="form-group">
-                    <label for="android_result">Result:</label>
-                    <textarea class="form-control" rows="3" id="android_result"></textarea>
+                        <div class="form-group">
+                            <label for="gcm_payload_str">JSON payload:</label>
+                            <textarea required class="form-control" rows="5" name="gcm_payload_str" ng-model="data.gcm_payload_str" placeholder='{"data": "this is default data from push-to-me desktop app"}'></textarea>
+                            <div ng-show="form.$submitted || form.gcm_payload_str.$touched" class="alert-danger" role="alert">
+                                <span ng-show="form.gcm_payload_str.$error.required">Have you added any payload ?</span>
+                            </div>
+                        </div>
+                        <div class="form-group" role="group">
+                            <button type="submit" ng-disabled="form.$invalid" ng-click="gcm_handler(form)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send Notification
+                            </button>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button ng-click="remember_values(data)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Remember
+                            </button>
+                            <button ng-click="boot()" class="btn btn-default">
+                                <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Load Old
+                            </button>
+                            <button ng-click="clear()" class="btn btn-default">
+                                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Clear
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <!-- iOS section below-->
-            <div class="col-xs-6">
+            <div class="col-xs-6" ng-controller="APNS">
                 <div class="page-header">
                     <h2 class="text-center">
                     <img src="lib/images/apple.png" alt="" class="img-rounded">
                     </h2>
                 </div>
-                <form data-toggle="validator" role="form" id="ios_form" action="javascript:apns_handler();">
+                <form name="cert_form" novalidate class="simple-form">
                     <div class="form-group">
                         <label for="p12_certificate">Path of P12 file</label>
-                        <input class="form-control" id="p12_certificate" placeholder="Please provide path for the downloaded p12 file" value="/Users/pranav/Downloads/VESSEL.p12" required data-fv-notempty="true" data-fv-notempty-message="Certificate path can not be empty and should be valid.">
+                        <input class="form-control" name="cert" ng-model="data.p12_certificate" placeholder="/Users/u1/Downloads/VESSEL.p12" required>
+                        <div ng-show="cert_form.$submitted || cert_form.cert.$touched" class="alert-danger" role="alert">
+                            <span ng-show="cert_form.cert.$error.required">P12 certificate is required.</span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="p12_passphrase">Passphrase</label>
-                        <input id="p12_passphrase" value="vessel" type="text" placeholder="Passphrase for given p12 certificate"/>
+                        <input ng-model="data.p12_passphrase" value="vessel" type="text" placeholder="Passphrase for given p12 certificate"/>
                     </div>
                     <div class="form-group">
-                        <button type="button" onclick="apns_upload_certificate()">Upload certificate</button>
+                        <button type="submit" ng-disabled="cert_form.$invalid" ng-click="apns_upload_certificate()">Upload certificate</button>
                     </div>
-                    <div class="form-group">
-                        <label for="ios_push_token">Push Token</label>
-                        <input type="text" name="push_tokn" class="form-control" id="ios_push_token" required="true"value="f22dd2e3a26982e496074b7ab082f749363f1f158a7ecdff0fe1c55472c4a970"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="apns_payload">Enter JSON payload:</label>
-                        <textarea class="form-control"  placeholder='{"aps":{"alert":"modified alert","badge":10}}' rows="5" id="apns_payload"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send Notification</button>
                 </form>
-                <div class="form-group">
-                    <label for="ios_result">Result:</label>
-                    <textarea class="form-control" rows="3" id="ios_result"></textarea>
-                </div>
+                <form name="ios_form" novalidate class="simple-form" ng-init="boot()">
+                    <div class="form-group">
+                        <label for="push_token">Push Token</label>
+                        <input type="text" name="push_token" class="form-control" ng-model="data.push_token" required>
+                        <div ng-show="ios_form.$submitted || ios_form.push_token.$touched" class="alert-danger" role="alert">
+                            <span ng-show="ios_form.push_token.$error.required">Push token is required.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="apns_payload_str">Enter JSON payload:</label>
+                        <textarea class="form-control" rows="5" ng-model="data.apns_payload_str" name="apns_payload_str"></textarea>
+                    </div>
+                    <div class="form-group" role="group">
+                        <button type="submit" ng-disabled="ios_form.$invalid" ng-click="apns_handler(ios_form)" class="btn btn-default">
+                            <span class="glyphicon glyphicon-send" aria-hidden="true"></span> Send Notification
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button ng-click="remember_values(data)" class="btn btn-default">
+                            <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Remember
+                        </button>
+                        <button ng-click="boot()" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Load Old
+                        </button>
+                        <button ng-click="clear()" class="btn btn-default">
+                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Clear
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </body>
-
 </html>
-
-<!-- 
-
-remove round brackets
-increase input height
-by default serker key - disabled : click to modify when out-foucused auto-update
-remove update button
-
-
--->

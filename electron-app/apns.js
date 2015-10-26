@@ -3,136 +3,146 @@ var Configstore = require('configstore')
 var pkg = require('./package.json');
 var defaults = {'certFilePath': 'certificates/cert.pem',
 				'keyFilePath':'certificates/key.pem',
-				'passphrase': '',
 				'writeFilename': 'certificates/certificate.p12'}
-var conf = new Configstore(pkg.name, defaults);
+var conf = new Configstore(pkg.name);
 
-function checkCertificates () {
-	var certFilePath = conf.get('certFilePath')
-	var keyFilePath = conf.get('keyFilePath')
-	if(fs.existsSync(certFilePath) && fs.existsSync(keyFilePath)){
+var pushtomeApp = angular.module('pushtomeApp');
+
+pushtomeApp.controller('APNS', ['$scope', 'growl', function ($scope, growl) {
+	$scope.data = {}
+	$scope.config = {}
+
+	$scope.boot = function () {
+		$scope.data = conf.get('apns')
+		$scope.data.apns_payload_str = '{"aps":{"alert":"modified alert","badge":10}}'
+		conf.set('apns_config', defaults)
+		$scope.config = conf.get('apns_config')
+	}
+
+	$scope.clear = function () {
+		$scope.data = {}
+	}
+
+	$scope.remember_values = function (data) {
+		try{
+			data.payload_json = JSON.parse($scope.data.apns_payload_str)
+		}catch(e){
+			growl.error("Please check gcm payload", {'title': 'Invalid JSON'});
+			return false
+		}
+		conf.set('apns',data)
+		growl.success('Available data saved.')
 		return true
 	}
-}
 
-function updateStatus(msg){
-	msg = msg || ""
-	document.getElementById('ios_result').value = msg;
-}
+	$scope.checkCertificates = function() {
+		if(fs.existsSync($scope.config.certFilePath) && fs.existsSync($scope.config.keyFilePath)){
+			return true
+		}
+	}
 
-function apns_upload_certificate(){
-	updateStatus('validating..')
-	var filename = document.getElementById('p12_certificate').value
-	if(filename && fs.existsSync(filename)){
-		// filename='/Users/pranav/Downloads/VESSEL.p12'
-		p12_passphrase = document.getElementById('p12_passphrase').value
-		var writeFilename = conf.get('writeFilename')
+	$scope.generateKeys = function(){
+		var passphrase = $scope.data.p12_passphrase
+		var writeFilename = $scope.config.writeFilename
+		var certFilePath = $scope.config.certFilePath
+		var keyFilePath = $scope.config.keyFilePath
+		var exec = require('child_process').execSync;
+		exec("openssl pkcs12 -in "+ writeFilename +" -out "+ certFilePath +" -clcerts -nokeys -passin pass:" + passphrase);
+		exec("openssl pkcs12 -in "+ writeFilename +" -out "+ keyFilePath +" -nocerts -nodes -passin pass:" + passphrase);
+		growl.success("Pem keys generated", {'title': 'Keys are generated'})
+	}
+
+	$scope.send_puh_notification = function(){
+		var certFilePath = $scope.config.certFilePath
+		var keyFilePath = $scope.config.keyFilePath
+		var passphrase = $scope.config.passphrase
+		var push_token = $scope.data.push_token
+
+		if(!$scope.checkCertificates()){
+			growl.success("Please upload p12 file.", {'title': 'Certificates not found.'})
+			return
+		}
+		var options = { 'passphrase': passphrase, 'cert': certFilePath, 'key': keyFilePath };
+		var apnConnection = new apn.Connection(options);
+		if(!push_token){
+			growl.error("Unable to send notification.", {'title': 'Token not defined'})
+			return;
+		}
 		try{
-			data = fs.readFileSync(filename)
-			conf.set('passphrase',p12_passphrase)
-			res = fs.writeFileSync(writeFilename, data)
-			updateStatus('Certificate uploaded')
-			updateStatus('Generating keys now')
-			generateKeys()
-			updateStatus("Done.")
+			var myDevice = new apn.Device(push_token);
 		}catch(e){
-			updateStatus('Exception ' + e)
-			console.log(e)
+			growl.error('Invalid hex string', {'title': 'Check push token'})
+			return
 		}
-	}else{
-		updateStatus('Certificate path is not correct.')
+		var note = new apn.Notification();
+		note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+		note.badge = 10;
+		note.sound = "ping.aiff";
+		note.alert = "Default message from Push-To-Me desktop app.";
+		note.payload = {'messageFrom': 'An offer '};
+		user_payload = {}
+		try{
+			if($scope.data.apns_payload_str)
+				$scope.data.payload_json = JSON.parse($scope.data.apns_payload_str)
+		}catch(e){
+			growl.error('JSON is invalid', {'title': 'Error'})
+			return
+		}
+		if($scope.data.payload_json.hasOwnProperty('aps')){
+			aps = $scope.data.payload_json['aps']
+			if(aps.hasOwnProperty('expiry')){
+				note.expiry = aps['expiry']
+			}
+			if(aps.hasOwnProperty('badge')){
+				note.badge = aps['badge']
+			}
+			if(aps.hasOwnProperty('sound')){
+				note.sound = aps['sound']
+			}
+			if(aps.hasOwnProperty('alert')){
+				note.alert = aps['alert']
+			}
+			delete $scope.data.payload_json['aps']
+		}
+		if(Object.keys($scope.data.payload_json).length > 0){
+			note.payload = $scope.data.payload_json
+		}
+		try{
+			apnConnection.pushNotification(note, myDevice);
+			growl.success('Notification sent', {'title': 'Please check respective device.'})
+		}catch(ex){
+			growl.error('Error in sending notification')
+			console.log("eeeeeeeee", ex)
+		}
 	}
-}
 
-function generateKeys(){
-	var passphrase = conf.get('passphrase')
-	var writeFilename = conf.get('writeFilename')
-	var certFilePath = conf.get('certFilePath')
-	var keyFilePath = conf.get('keyFilePath')
-	var exec = require('child_process').execSync;
-    updateStatus("Generating cert.pem")
-    exec("openssl pkcs12 -in "+ writeFilename +" -out "+ certFilePath +" -clcerts -nokeys -passin pass:" + passphrase);
-    updateStatus("Generating key.pem")
-    exec("openssl pkcs12 -in "+ writeFilename +" -out "+ keyFilePath +" -nocerts -nodes -passin pass:" + passphrase);
-}
+	$scope.apns_handler = function(form){
+		if (form) {
+			form.$setPristine();
+			form.$setUntouched();
+		}
+		if(form.$valid){
+			$scope.send_puh_notification()
+		}
+	}
 
-function send_puh_notification(push_token){
-	var certFilePath = conf.get('certFilePath')
-	var keyFilePath = conf.get('keyFilePath')
-	var passphrase = conf.get('passphrase')
+	$scope.apns_upload_certificate = function(){
+		var filename = $scope.data.p12_certificate
+		if(filename && fs.existsSync(filename)){
+			// filename='/Users/pranav/Downloads/VESSEL.p12'
+			var writeFilename = $scope.config.writeFilename
+			try{
+				data = fs.readFileSync(filename)
+				res = fs.writeFileSync(writeFilename, data)
+				$scope.generateKeys()
+				growl.success("Certificate uploaded.")
+			}catch(e){
+				growl.error('Check password once', {'title':"Unable to use given certificate."})
+				console.log(e)
+			}
+		}else{
+			growl.error("Certificate path is not correct.")
+		}
+	}
 
-	if(!checkCertificates()){
-		updateStatus('Certificates not found. Please upload first.')
-		return
-	}
-	var options = { 'passphrase': passphrase, 'cert': certFilePath, 'key': keyFilePath };
-	var apnConnection = new apn.Connection(options);
-	if(!push_token){
-		console.log("Unable to send notification. Token not defined");
-		updateStatus("Unable to send notification. Token not defined")
-		return;
-	}
-	console.log("sending to....", push_token);
-	updateStatus("sending to...."+ push_token)
-	var myDevice = new apn.Device(push_token);
-	var note = new apn.Notification();
-	note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-	note.badge = 10;
-	note.sound = "ping.aiff";
-	note.alert = "Default message from Push-To-Me desktop app.";
-	note.payload = {'messageFrom': 'An offer '};
-	user_payload = {}
-	try{
-		user_payload_str = document.getElementById('apns_payload').value
-		console.log(user_payload_str)
-		if(user_payload_str)
-			user_payload = JSON.parse(user_payload_str)
-		console.log(user_payload)
-	}catch(e){
-		console.log(e)
-		updateStatus("invalid json payload")
-		return
-	}
-	if(user_payload.hasOwnProperty('aps')){
-		aps = user_payload['aps']
-		if(aps.hasOwnProperty('expiry')){
-			note.expiry = aps['expiry']
-		}
-		if(aps.hasOwnProperty('badge')){
-			note.badge = aps['badge']
-		}
-		if(aps.hasOwnProperty('sound')){
-			note.sound = aps['sound']
-		}
-		if(aps.hasOwnProperty('alert')){
-			note.alert = aps['alert']
-		}
-		delete user_payload['aps']
-	}
-	if(Object.keys(user_payload).length > 0){
-		note.payload = user_payload
-	}
-	// note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-	// note.badge = 3;
-	// note.sound = "ping.aiff";
-	// note.sound = "default";
-	// note.alert = "custom alert"
-	// note.alert = "New notification.timestamp=" + (Math.floor(new Date() / 1000 ));
-	//"New notification.timestamp=" + (Math.floor(new Date() / 1000 )+ ", count="+config.notification_cnt++);
-	// note.payload = {"aps":{"alert":"Message for IOS"},"vs":{"a":"www.yahoo.co.in","style":"normal","title":"KDBugathon","message":"Hello this is first message Furious 7.","cid":"22031"}}
-	// {'aps':{'alert': '25% off you next purchase, promotion code: tYR8Ip'}, 'vs': {'a': ∂'http://www.jcrew.com', 'cid': 28664}}, 'app_brand_id': 181, 'munchkin_id': '588-MQE-543', 'uuid': 'BC9F7AC6-05AD-449E-BAD8-5B419375B128', 'delivery_id': None, 'app_id': 361, 'push_token': ß'c387b8aee4b874b26b66185a10d60e57ea74cea6f3b649c8c9bd6e5a11f1a8d3', 'os': 'ios', 'campaign_parameters':
-	// note.payload = {"aps":{"alert":"Message for IOS"},"vs":{"a":"http://google.com","style":"normal","title":"KDBugathon","message":"Hello this is first message Furious 7.","cid":"22031"}}
-	// note.payload = JSON.parse(document.getElementById('apns_payload').value)
-	// console.log("@@@", JSON.parse(document.getElementById('apns_payload').value))
-	try{
-		apnConnection.pushNotification(note, myDevice);
-		console.log("sent to....", myDevice, note);
-	}catch(ex){
-		console.log("eeeeeeeee", ex)
-	}
-}
-
-function apns_handler(){
-	var token = document.getElementById('ios_push_token').value
-	send_puh_notification(token)
-}
+}])
