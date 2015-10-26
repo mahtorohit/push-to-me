@@ -1,15 +1,38 @@
+
 # Push To Me
 
-Are you a mobile developer and working on push notification functionality ?
+Are you a mobile developer and working on push notification feature ?
 If yes then you will need this while development :)
 
 > Target user is a developer working on mobile platform for push notifications.
 > This project allows you to upload p12 file and then pass your push token and then receive a nofitication so that you can proceed with your code. And in case of android you can provide server_key and push_token.
 
-
 #### Version
 1.0.0
 
+## Now introducing ElectronJS application
+New simple, neat and handy desktop application to send push notification to your device.
+
+* Download electron app.
+* Start by double clicking on the executable
+
+1. If you are working with GCM(andorid) then
+    1. API key
+    2. Push token
+    3. JSON payload
+
+   and **hit send button**. Thats it... you will recive a notificaiton on your android device.
+
+2. If you are working with APNS(iOS) then
+    1. path of p12 file
+    2. passphrase if any
+    3. JSON payload
+
+    and **hit send button**. Thats it... you will receive a notificaiton on your iDevice.
+
+---
+---
+#### *_Read following notes if you are not going to use electron desktop application._*
 #### Requirements
 1. openssl
 2. nodejs > 10
