@@ -17,6 +17,7 @@ pushtomeApp.controller('APNS', ['$scope', 'growl', function ($scope, growl) {
 		$scope.data.apns_payload_str = '{"aps":{"alert":"modified alert","badge":10}}'
 		conf.set('apns_config', defaults)
 		$scope.config = conf.get('apns_config')
+		$scope.data.certificates_exists = $scope.checkCertificates()
 	}
 
 	$scope.clear = function () {
@@ -39,6 +40,7 @@ pushtomeApp.controller('APNS', ['$scope', 'growl', function ($scope, growl) {
 		if(fs.existsSync($scope.config.certFilePath) && fs.existsSync($scope.config.keyFilePath)){
 			return true
 		}
+		return false
 	}
 
 	$scope.generateKeys = function(){
@@ -136,6 +138,7 @@ pushtomeApp.controller('APNS', ['$scope', 'growl', function ($scope, growl) {
 				res = fs.writeFileSync(writeFilename, data)
 				$scope.generateKeys()
 				growl.success("Certificate uploaded.")
+				$scope.data.certificates_exists = $scope.checkCertificates()
 			}catch(e){
 				growl.error('Check password once', {'title':"Unable to use given certificate."})
 				console.log(e)

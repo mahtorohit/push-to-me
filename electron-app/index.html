@@ -87,6 +87,9 @@
                     <div class="form-group">
                         <button type="submit" ng-disabled="cert_form.$invalid" ng-click="apns_upload_certificate()">Upload certificate</button>
                     </div>
+                    <div>
+                        <span ng-show="data.certificates_exists">Certificate available</span>
+                    </div>
                 </form>
                 <form name="ios_form" novalidate class="simple-form" ng-init="boot()">
                     <div class="form-group">

@@ -12,7 +12,7 @@ app.on('window-all-closed', function() {
 });
 
 app.on('ready', function() {
-	mainWindow = new BrowserWindow({x:45, y:45, width: 900, height: 650, resizable:true});
+	mainWindow = new BrowserWindow({x:45, y:45, 'width': 1080, 'height': 700, resizable:false});
 
 	mainWindow.loadUrl('file://'+__dirname+'/index.html');
 
