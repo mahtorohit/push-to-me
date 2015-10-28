@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8">
     <title>Hello Electron !!</title>
-    <link href="lib/css/bootstrap.min.css" rel="stylesheet">
-    <link href="lib/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="lib/css/angular-growl.css" rel="stylesheet">
-    <script type="text/javascript" src="node_modules/angular/angular.js"></script>
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="stylesheets/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="stylesheets/angular-growl.css" rel="stylesheet">
+    <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
     <script type="text/javascript" src="gcm.js"></script>
     <script type="text/javascript" src="apns.js"></script>
-    <script type="text/javascript" src="lib/js/angular-growl.js"></script>
+    <script type="text/javascript" src="javascripts/angular-growl.js"></script>
 </head>
 
 <body>
@@ -22,7 +22,7 @@
                 <div class="col-xs-12">
                     <div class="page-header">
                         <h2 class="text-center">
-                            <img src="lib/images/android.png" alt="" class="img-rounded"> </img>
+                            <img src="images/android.png" alt="" class="img-rounded"> </img>
                             </h2>
                     </div>
                     <form name="form" novalidate class="simple-form" ng-init="boot()">
@@ -70,20 +70,20 @@
             <div class="col-xs-6" ng-controller="APNS">
                 <div class="page-header">
                     <h2 class="text-center">
-                    <img src="lib/images/apple.png" alt="" class="img-rounded">
+                    <img src="images/apple.png" alt="" class="img-rounded">
                     </h2>
                 </div>
                 <form name="cert_form" novalidate class="simple-form">
                     <div class="form-group">
                         <label for="p12_certificate">Path of P12 file</label>
-                        <input class="form-control" name="cert" ng-model="data.p12_certificate" placeholder="/Users/u1/Downloads/VESSEL.p12" required>
+                        <input class="form-control" name="cert" ng-model="data.p12_certificate" value="/Users/pranav/Downloads/VESSEL.p12" required>
                         <div ng-show="cert_form.$submitted || cert_form.cert.$touched" class="alert-danger" role="alert">
                             <span ng-show="cert_form.cert.$error.required">P12 certificate is required.</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="p12_passphrase">Passphrase</label>
-                        <input ng-model="data.p12_passphrase" value="vessel" type="text" placeholder="Passphrase for given p12 certificate"/>
+                        <input ng-model="data.p12_passphrase" value="123123" type="text" placeholder="Passphrase for given p12 certificate"/>
                     </div>
                     <div class="form-group">
                         <button type="submit" ng-disabled="cert_form.$invalid" ng-click="apns_upload_certificate()">Upload certificate</button>
