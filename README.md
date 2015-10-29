@@ -10,20 +10,20 @@ If yes then you will need this while development :)
 #### Version
 1.0.0
 
-## Now introducing ElectronJS application
-New simple, neat and handy desktop application to send push notification to your device.
+## Now introducing ElectronJS application (currentlt only for iOS)
+Handy GUI utility to send push notification to your device.
 
-* Download electron app.
-* Start by double clicking on the executable
+* Download dmg from "dist" directory.
+* Install it.
 
-1. If you are working with GCM(andorid) then
+1. If you are working with GCM(andorid) then provide
     1. API key
     2. Push token
     3. JSON payload
 
    and **hit send button**. Thats it... you will recive a notificaiton on your android device.
 
-2. If you are working with APNS(iOS) then
+2. If you are working with APNS(iOS) then provide
     1. path of p12 file
     2. passphrase if any
     3. JSON payload

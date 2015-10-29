@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Hello Electron !!</title>
+    <title>Push-To-Me Desktop Application</title>
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
     <link href="stylesheets/bootstrap-theme.min.css" rel="stylesheet">
     <link href="stylesheets/angular-growl.css" rel="stylesheet">
@@ -13,7 +13,7 @@
     <script type="text/javascript" src="javascripts/angular-growl.js"></script>
 </head>
 
-<body>
+<body style="background-image: url('images/bg.png');">
     <div growl></div>
     <div class="container-fluid">
         <div class="row">
@@ -76,7 +76,7 @@
                 <form name="cert_form" novalidate class="simple-form">
                     <div class="form-group">
                         <label for="p12_certificate">Path of P12 file</label>
-                        <input class="form-control" name="cert" ng-model="data.p12_certificate" value="/Users/pranav/Downloads/VESSEL.p12" required>
+                        <input class="form-control" name="cert" ng-model="data.p12_certificate" value="/Users/pranav/Downloads/mirai_dev.p12" required>
                         <div ng-show="cert_form.$submitted || cert_form.cert.$touched" class="alert-danger" role="alert">
                             <span ng-show="cert_form.cert.$error.required">P12 certificate is required.</span>
                         </div>

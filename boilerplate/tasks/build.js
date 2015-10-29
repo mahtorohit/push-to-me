@@ -23,6 +23,7 @@ var paths = {
         './apns.js',
         './javascripts/*.js',
         './images/*.png',
+        './images/*.jpg',
         './stylesheets/*.css',
         './fonts/**'
     ],
