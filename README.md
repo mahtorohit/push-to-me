@@ -5,7 +5,7 @@ Are you a mobile developer and working on push notification feature ?
 If yes then you will need this while development :)
 
 > Target user is a developer working on mobile platform for push notifications.
-> This project allows you to upload p12 file and then pass your push token and then receive a nofitication so that you can proceed with your code. And in case of android you can provide server_key and push_token.
+> This utility accepts (for iOS)p12 certificate, push token and then sends push notification to that device. Similarly for android, it accepts server key, push token and then sends a push notificaiton.
 
 #### Version
 1.0.0
