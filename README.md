@@ -10,7 +10,7 @@ If yes then you will need this while development :)
 #### Version
 1.0.0
 
-## Now introducing ElectronJS application (currentlt only for iOS)
+## Now introducing ElectronJS application (currentlt only for OS X)
 Handy GUI utility to send push notification to your device.
 
 * Download dmg from "dist" directory.
@@ -23,7 +23,7 @@ Handy GUI utility to send push notification to your device.
 
    and **hit send button**. Thats it... you will recive a notificaiton on your android device.
 
-2. If you are working with APNS(iOS) then provide
+2. If you are working with APNS(Apple service for push notifications) then provide
     1. path of p12 file
     2. passphrase if any
     3. JSON payload
@@ -42,7 +42,7 @@ Handy GUI utility to send push notification to your device.
 2. unzip
 3. Execute following
 
-*For IOS*
+*For OS X*
 ```sh
 $ cd ios
 $ npm install
@@ -59,7 +59,7 @@ $ node server.js
 
 #### How to use
 
-*For IOS*
+*For OS X*
 
 1. go to http://localhost:8080/
 2. Upload a p12 file and provide passphrase if any
@@ -76,5 +76,5 @@ Modify **config.js** in respective directories.
 
 | Parameter        | Type           | default  | Explaination |
 |:-------------:|:-------------:|:-----:|:-----|
-| port      | int | 8080/9090 | For ios 8080 nad for android 9090 |
+| port      | int | 8080/9090 | For OS X 8080 and for android 9090 |
 | interval_sec      | int      |   -1 | Set value in seconds to receive notification contineously after that interval
