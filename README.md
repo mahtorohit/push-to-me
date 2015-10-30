@@ -13,7 +13,7 @@ If yes then you will need this while development :)
 ## Now introducing ElectronJS application (currentlt only for OS X)
 Handy GUI utility to send push notification to your device.
 
-* Download dmg from "dist" directory.
+* Download dmg from release tab.
 * Install it.
 
 1. If you are working with GCM(andorid) then provide
