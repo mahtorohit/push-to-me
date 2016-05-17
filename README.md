@@ -78,3 +78,9 @@ Modify **config.js** in respective directories.
 |:-------------:|:-------------:|:-----:|:-----|
 | port      | int | 8080/9090 | For OS X 8080 and for android 9090 |
 | interval_sec      | int      |   -1 | Set value in seconds to receive notification contineously after that interval
+
+
+License
+----
+
+MIT
